@@ -1,0 +1,195 @@
+<html>
+<!-- include ajax -->
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+    <style>
+      .row-top-padding {
+        margin-top: 1rem;
+      }
+
+      input[type=color] {
+        width: 100%;
+      }
+
+      .glyphicon.spinning {
+          animation: spin 1s infinite linear;
+          -webkit-animation: spin2 1s infinite linear;
+          width
+      }
+
+      @keyframes spin {
+          from { transform: scale(1) rotate(0deg); }
+          to { transform: scale(1) rotate(360deg); }
+      }
+
+      @-webkit-keyframes spin2 {
+          from { -webkit-transform: rotate(0deg); }
+          to { -webkit-transform: rotate(360deg); }
+      }
+    </style>
+    <script>
+      function api_polling() {
+        $.ajax({
+          url: "http://localhost:5000/api_polling",
+          method: 'GET',
+          success: function(data, textStatus, jQxhr) {
+            $('#api-polling').html( data );
+
+            if (data !== "") {
+              clearInterval(window.polling);
+              $('.glyphicon-refresh').css('display', 'none');
+            }
+          },
+          error: function( jqXhr, textStatus, errorThrown ){
+              $('#api-polling').html( "There was an error" );
+              console.log( errorThrown );
+          }
+        })
+      }
+      function api_call(input) {
+        $.ajax({
+          url: "http://localhost:5000/api",
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(input),
+          success: function( data, textStatus, jQxhr ){
+              $('#api-polling').html( "Request Sent" );
+              $('.glyphicon-refresh').css('display', 'block');
+              window.polling = setInterval(api_polling,5000);
+          },
+          error: function( jqXhr, textStatus, errorThrown ){
+              $('#api-polling').html( "There was an error" );
+              console.log( errorThrown );
+          },
+          timeout: 3000
+        });
+      }
+      $( document ).ready(function() {
+          // request when clicking on the button
+          $('#btn').click(function() {
+              var input = $("input[name=color]").map(function() { return $(this).val()}).get();
+              api_call(input);
+              input = "";
+          });
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- form, button and output -->
+    <nav class="navbar navbar-default">
+      <div class='container-fluid'>
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">SOM Colors</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <h5>Pick 24 colors to be trained</h5>
+
+      <div class='row row-top-padding'>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FF0000'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#0000FF'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#00FF00'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FFFF00'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#00FFFF'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FF00FF'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#800000'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#F0E68C'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#ADFF2F'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#DA70D6'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FFC0CB'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#191970'/>
+        </div>
+      </div>
+      <div class='row row-top-padding'>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#7FFFD4'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#F0FFF0'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FFF0F5'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#8B4513'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#00BFFF'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#6495ED'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FFFAFA'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FF4500'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#FFD700'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#556B2F'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#2F4F4F'/>
+        </div>
+        <div class='col-sm-1'>
+          <input type='color' name='color' value='#BC8F8F'/>
+        </div>
+      </div>
+      <div class='row row-top-padding'>
+        <div class='col-sm-12'>
+          <button id="btn" class='btn'>Call API</button>
+        </div>
+      </div>
+      <div class='row row-top-padding'>
+        <div class='col-sm-12'>
+          <div style='width: fit-content'>
+            <span class='glyphicon glyphicon-refresh spinning' style='display:none'>
+            </span>
+          </div>
+      <div class='row row-top-padding'>
+        <div class='col-sm-12' id='api-polling'>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
