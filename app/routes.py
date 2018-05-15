@@ -1,4 +1,4 @@
-from app import app
+from app import app, cache
 from flask import Flask, request, jsonify, make_response, render_template
 import webcolors
 from app.serve import process_som_model
@@ -14,7 +14,8 @@ files = [
             "app/static/data/0.png",
             "app/static/data/1.png",
             "app/static/data/2.png",
-            "app/static/data/3.png"
+            "app/static/data/3.png",
+            "app/static/data/4.png"
             ]
 
 @app.route('/')
@@ -40,29 +41,31 @@ def server_error(e):
 def api():
     hex_colours = request.json
     rgb_colours = []
-    global cached_colours
-    for colour in hex_colours:
+    global files
 
+    for file in files:
+        if Path(file).is_file():
+            Path(file).unlink()
+
+    for colour in hex_colours:
         rgb_colours.append(
                 list(map(lambda x: x / 255,
                     list(webcolors.hex_to_rgb(colour))
                 ))
             )
 
-    # print(hex_colours)
     rgb_colours = np.asarray(rgb_colours)
 
-    print("Starting thread to train")
+    print("Starting a thread to train the model")
     t = Thread(target=process_som_model, args=(rgb_colours,))
     t.start()
 
-    # output_data = model_api(input_data)
-    # response = jsonify(output_data)
     response = jsonify([])
     return response
 
 # ajax polling this route to load the training result
 @app.route('/api_polling', methods=['GET'])
+@cache.cached(unless=True)
 def api_polling():
     all_exist = True
     global files

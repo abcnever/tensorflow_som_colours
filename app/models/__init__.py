@@ -35,7 +35,7 @@ class SOM(object):
         else:
             alpha = float(alpha)
         if sigma is None:
-            sigma = max(m, n) / 2.0
+            sigma = int(max(m, n) * 0.4)
         else:
             sigma = int(sigma)
         self._n_iterations = abs(int(n_iterations))
