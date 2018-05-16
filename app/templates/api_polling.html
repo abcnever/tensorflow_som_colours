@@ -1,7 +1,7 @@
 <div class='row'>
 {% for image in images %}
   <div class='col-sm-12'>
-    <img src="{{url_for('static', filename=image)}}" class="img-fluid"/>
+    <img src="{{url_for('static', filename=image) + '?q=' + timestamp}}" class="img-fluid"/>
   </div>
 {% endfor %}
 </div>

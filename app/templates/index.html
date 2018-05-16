@@ -40,7 +40,7 @@
     <script>
       function api_polling() {
         $.ajax({
-          url: "http://localhost:5000/api_polling",
+          url: "/api_polling",
           method: 'GET',
           success: function(data, textStatus, jQxhr) {
             $('#api-polling').html( data );
@@ -58,10 +58,9 @@
       }
       function api_call(input) {
         $.ajax({
-          url: "http://localhost:5000/api",
+          url: "/api",
           method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify(input),
+          data: input,
           success: function( data, textStatus, jQxhr ){
               $('#api-polling').html( "Request Sent" );
               $('.glyphicon-refresh').css('display', 'block');
@@ -75,12 +74,12 @@
         });
       }
       $( document ).ready(function() {
-          // request when clicking on the button
-          $('#btn').click(function() {
-              var input = $("input[name=color]").map(function() { return $(this).val()}).get();
-              api_call(input);
-              input = "";
-          });
+          $('form#request').submit(function(event) {
+            var input = $('form#request').serialize();
+            api_call(input);
+            input = "";
+            event.preventDefault();
+          })
       });
     </script>
   </head>
@@ -95,100 +94,121 @@
       </div>
     </nav>
     <div class="container">
-      <h5>Pick 24 colors to be trained</h5>
+      <form id='request'>
+        <h5>Pick 24 colors to be trained</h5>
 
-      <div class='row row-top-padding'>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FF0000'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#0000FF'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#00FF00'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FFFF00'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#00FFFF'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FF00FF'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#800000'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#F0E68C'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#ADFF2F'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#DA70D6'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FFC0CB'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#191970'/>
-        </div>
-      </div>
-      <div class='row row-top-padding'>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#7FFFD4'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#F0FFF0'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FFF0F5'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#8B4513'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#00BFFF'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#6495ED'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FFFAFA'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FF4500'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#FFD700'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#556B2F'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#2F4F4F'/>
-        </div>
-        <div class='col-sm-1'>
-          <input type='color' name='color' value='#BC8F8F'/>
-        </div>
-      </div>
-      <div class='row row-top-padding'>
-        <div class='col-sm-12'>
-          <button id="btn" class='btn'>Call API</button>
-        </div>
-      </div>
-      <div class='row row-top-padding'>
-        <div class='col-sm-12'>
-          <div style='width: fit-content'>
-            <span class='glyphicon glyphicon-refresh spinning' style='display:none'>
-            </span>
+        <div class='row row-top-padding'>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FF0000'/>
           </div>
-      <div class='row row-top-padding'>
-        <div class='col-sm-12' id='api-polling'>
-
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#0000FF'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#00FF00'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FFFF00'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#00FFFF'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FF00FF'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#800000'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#F0E68C'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#ADFF2F'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#DA70D6'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FFC0CB'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#191970'/>
+          </div>
         </div>
-      </div>
+        <div class='row row-top-padding'>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#7FFFD4'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#F0FFF0'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FFF0F5'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#8B4513'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#00BFFF'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#6495ED'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FFFAFA'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FF4500'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#FFD700'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#556B2F'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#2F4F4F'/>
+          </div>
+          <div class='col-sm-1'>
+            <input type='color' name='colors' value='#BC8F8F'/>
+          </div>
+        </div>
+        <div class='row row-top-padding'>
+          <div class='col-sm-2'>
+            <div class="form-group">
+              <label for="x-dim">X dimension</label>
+              <input type="text" class="form-control" id="x-dim" name='x-dim' placeholder="x" value="20">
+            </div>
+          </div>
+          <div class='col-sm-2'>
+            <div class="form-group">
+              <label for="y-dim">Y dimension</label>
+              <input type="text" class="form-control" id="y-dim" name='y-dim' placeholder="y" value="20">
+            </div>
+          </div>
+          <div class='col-sm-2'>
+            <p>Note that any grid larger than 50x50 will result in rather significant training time
+            </p>
+          </div>
+        </div>
+        <div class='row row-top-padding'>
+          <div class='col-sm-12'>
+            <button id="btn" class='btn'>Call API</button>
+          </div>
+        </div>
+        <div class='row row-top-padding'>
+          <div class='col-sm-12'>
+            <div style='width: fit-content'>
+              <span class='glyphicon glyphicon-refresh spinning' style='display:none'>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class='row row-top-padding'>
+          <div class='col-sm-12' id='api-polling'>
+          </div>
+        </div>
+      </form>
     </div>
 
   </body>

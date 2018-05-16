@@ -1,4 +1,4 @@
-from app import app, cache
+from app import app
 from flask import Flask, request, jsonify, make_response, render_template
 import webcolors
 from app.serve import process_som_model
@@ -8,6 +8,7 @@ import numpy as np
 import contextlib
 import os
 import re
+import time
 
 
 files = [
@@ -39,7 +40,13 @@ def server_error(e):
 # request this route to start the training
 @app.route('/api', methods=['POST'])
 def api():
-    hex_colours = request.json
+    hex_colours = request.form.getlist('colors')
+    app.logger.info(str(request.form))
+
+    x_dim = int(request.form['x-dim'])
+    y_dim = int(request.form['y-dim'])
+
+
     rgb_colours = []
     global files
 
@@ -56,8 +63,8 @@ def api():
 
     rgb_colours = np.asarray(rgb_colours)
 
-    print("Starting a thread to train the model")
-    t = Thread(target=process_som_model, args=(rgb_colours,))
+    app.logger.info("Starting a thread to train the model")
+    t = Thread(target=process_som_model, args=(rgb_colours,x_dim, y_dim,))
     t.start()
 
     response = jsonify([])
@@ -65,7 +72,6 @@ def api():
 
 # ajax polling this route to load the training result
 @app.route('/api_polling', methods=['GET'])
-@cache.cached(unless=True)
 def api_polling():
     all_exist = True
     global files
@@ -80,7 +86,11 @@ def api_polling():
         for file in files:
             relative_pathes.append(re.sub('app/static/', '', file))
 
-        return render_template("api_polling.html", images=relative_pathes)
+        # invalidate the cache mechanism. so the images are always the newest
+        response = make_response(render_template("api_polling.html", images=relative_pathes, timestamp=str(time.time())))
+        response.cache_control.max_age = 0
+        return response
+
     else:
         return render_template("empty_content.html")
 
